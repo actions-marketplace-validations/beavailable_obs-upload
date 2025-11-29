@@ -1,24 +1,26 @@
 # obs-upload
 Github Action to upload files to OBS (Open Build Service).
 
+**Note** that it'll remove all files in a package before uploading new files.
+
 ## Inputs
 **apiurl**  
-optional, default to `https://api.opensuse.org`.
+Optional, default to `https://api.opensuse.org`.
 
 **username**  
-required.
+Required.
 
 **password**  
-required.
+Required.
 
 **project**  
-required.
+Required.
 
 **package**  
-required.
+Required.
 
 **files**  
-required, space-separated glob patterns.
+Required, space-separated glob patterns.
 
 ## Example
 ```yml
