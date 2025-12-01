@@ -5,7 +5,7 @@ Github Action to upload files to OBS (Open Build Service).
 
 ## Inputs
 **apiurl**  
-Optional, default to `https://api.opensuse.org`.
+Optional, default `https://api.opensuse.org`.
 
 **username**  
 Required.
@@ -28,9 +28,9 @@ steps:
   - name: Upload to OBS
     uses: beavailable/obs-upload@main
     with:
-      username: test-name
+      username: beavailable
       password: ${{ secrets.OBS_PASSWORD }}
-      project: test-project
-      package: test-package
-      files: ./*.txt ./*.tar.xz
+      project: home:beavailable
+      package: example-package
+      files: ./*.txt ./*.tar.*
 ```
