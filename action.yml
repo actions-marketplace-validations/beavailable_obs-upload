@@ -20,9 +20,14 @@ inputs:
   package:
     description: OBS package
     required: true
+  type:
+    description: The type of the package
+    required: false
+    default: ''
   files:
     description: Files
-    required: true
+    required: false
+    default: ''
 runs:
   using: composite
   steps:
@@ -38,4 +43,5 @@ runs:
         OBS_PASSWORD: ${{ inputs.password }}
         OBS_PROJECT: ${{ inputs.project }}
         OBS_PACKAGE: ${{ inputs.package }}
+        OBS_TYPE: ${{ inputs.type }}
         OBS_FILES: ${{ inputs.files }}

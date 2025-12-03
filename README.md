@@ -19,8 +19,13 @@ Required.
 **package**  
 Required.
 
+**type**  
+Optional, default `""`.  
+Available types:
+- `deb` (only `3.0 (native)` and `3.0 (quilt)` are supported formats)
+
 **files**  
-Required, space-separated glob patterns.
+Optional, space-separated glob patterns, default `""`.
 
 ## Example
 ```yml
@@ -32,5 +37,5 @@ steps:
       password: ${{ secrets.OBS_PASSWORD }}
       project: home:beavailable
       package: example-package
-      files: ./*.txt ./*.tar.*
+      files: *.txt ./example-file.*
 ```

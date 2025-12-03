@@ -9,6 +9,39 @@ user="$OBS_USERNAME:$OBS_PASSWORD"
 EOF
 }
 
+case "$OBS_TYPE" in
+    deb)
+        format=$(cat debian/source/format)
+        package=${GITHUB_REPOSITORY##*/}
+        version=$(sed -nE '1s/^\S+ \((\S+)\).+$/\1/p' debian/changelog)
+        case "$format" in
+            '3.0 (native)')
+                dpkg-source -b .
+                OBS_FILES="$OBS_FILES ../${package}_$version.dsc ../${package}_$version.tar.xz"
+                ;;
+            '3.0 (quilt)')
+                git archive --format=tar --prefix=${package}-${version%-*}/ HEAD | xz >../${package}_${version%-*}.orig.tar.xz
+                dpkg-source -b .
+                OBS_FILES="$OBS_FILES ../${package}_$version.dsc ../${package}_$version.debian.tar.xz ../${package}_${version%-*}.orig.tar.xz"
+                ;;
+            *)
+                echo "Unsupported format: $format" >&2
+                exit 1
+                ;;
+        esac
+        ;;
+    '') ;;
+    *)
+        echo "Unknown type: $OBS_TYPE" >&2
+        exit 1
+        ;;
+esac
+
+if [[ -z "$OBS_FILES" ]]; then
+    echo 'No files provided' >&2
+    exit 1
+fi
+
 url="$OBS_APIURL/source/$OBS_PROJECT/$OBS_PACKAGE"
 
 _curl -F 'cmd=deleteuploadrev' "$url"
