@@ -20,7 +20,7 @@ case "$OBS_TYPE" in
                 OBS_FILES="$OBS_FILES ../${package}_$version.dsc ../${package}_$version.tar.xz"
                 ;;
             '3.0 (quilt)')
-                git archive --format=tar --prefix=${package}-${version%-*}/ HEAD | xz >../${package}_${version%-*}.orig.tar.xz
+                git archive --format=tar --prefix="${package}-${version%-*}/" HEAD $(git ls-tree --name-only HEAD | grep -v '^debian$') | xz >../${package}_${version%-*}.orig.tar.xz
                 dpkg-source -b .
                 OBS_FILES="$OBS_FILES ../${package}_$version.dsc ../${package}_$version.debian.tar.xz ../${package}_${version%-*}.orig.tar.xz"
                 ;;
