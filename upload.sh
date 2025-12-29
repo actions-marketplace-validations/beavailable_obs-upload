@@ -4,9 +4,18 @@ shopt -s inherit_errexit
 
 # $@: arguments
 _curl() {
-    curl -sS --fail-early --fail-with-body -K - -H 'Accept: application/xml; charset=utf-8' "$@" <<EOF
-user="$OBS_USERNAME:$OBS_PASSWORD"
-EOF
+    local retries
+    retries=0
+    while true; do
+        if curl -sSL --fail-early --fail-with-body --connect-timeout 10 -H 'Accept: application/xml; charset=utf-8' -K - "$@" <<<"user=$OBS_USERNAME:$OBS_PASSWORD"; then
+            break
+        fi
+        ((++retries))
+        if [[ $retries -ge 3 ]]; then
+            return 1
+        fi
+        sleep $((retries * 5))
+    done
 }
 prepare_files() {
     local format package version
@@ -58,15 +67,4 @@ if [[ -z "$OBS_FILES" ]]; then
     exit 1
 fi
 
-retries=0
-while [[ $retries -lt 3 ]]; do
-    if upload; then
-        exit
-    fi
-    ((++retries))
-    echo 'Uploading failed, sleeping 10 seconds...' >&2
-    sleep 10
-    echo "Retrying: $retries" >&2
-done
-
-exit 1
+upload
